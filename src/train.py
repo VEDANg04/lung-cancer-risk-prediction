@@ -147,7 +147,7 @@ def preprocess(df, target_col):
             pass
 
     label_encoder = None
-    if y.dtype == object or y.nunique() <= 20 and not np.issubdtype(y.dtype, np.integer):
+    if not pd.api.types.is_numeric_dtype(y):
         label_encoder = LabelEncoder()
         y = label_encoder.fit_transform(y)
         mapping = dict(enumerate(label_encoder.classes_))
