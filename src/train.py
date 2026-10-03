@@ -119,6 +119,7 @@ def load_data(path):
 
 
 def preprocess(df, target_col):
+    df = df.drop(columns=["Patient Id"], errors="ignore")
     
     before = df.shape[0]
     df = df.drop_duplicates().reset_index(drop=True)
