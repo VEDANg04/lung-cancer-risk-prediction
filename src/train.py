@@ -30,8 +30,13 @@ from sklearn.metrics import (
 )
 import joblib
 
-DATA_PATH = "/Users/vedangkimmatkar/Developer/Code/Cancer Predictive system project/cancer patient data sets.csv" 
-OUTPUT_DIR = "output_cancer_project_cv_tuning"
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_PATH = BASE_DIR / "data" / "cancer_patient_data_sets.csv"
+OUTPUT_DIR = BASE_DIR / "outputs"
+TARGET_COL = "Level"
+
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
 CV_FOLDS = 5
@@ -112,16 +117,6 @@ def load_data(path):
     print(f"Loaded dataset with shape: {df.shape}")
     return df
 
-def detect_target(df):
-    candidates = [c for c in df.columns if c.lower() in ("level", "stage", "label", "target", "class")]
-    if candidates:
-        print(f"Detected target column candidates: {candidates}. Using '{candidates[0]}'")
-        return candidates[0]
-    last_col = df.columns[-1]
-    if df[last_col].dtype == object or df[last_col].nunique() <= 10:
-        print(f"No standard name found - using last column as target: '{last_col}'")
-        return last_col
-    raise ValueError("Could not detect target column. Ensure the CSV contains a target column named 'level' or similar.")
 
 def preprocess(df, target_col):
     
@@ -333,7 +328,7 @@ def train_evaluate_final(X_train, X_test, y_train, y_test, preprocessor, dt_grid
 def main():
     df = load_data(DATA_PATH)
 
-    target_col = detect_target(df)
+    target_col = TARGET_COL
 
     print("\nInitial dataset info:")
     print(df.info())
